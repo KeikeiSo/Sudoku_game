@@ -1,8 +1,13 @@
 # Sudoku_game
-1. create a start interface
-2. print the sudoku puzzle when 'start' is clicked
-3. exit the program when 'exit' is clicked
-3. get input from user in each entries in sudoku
-4. empty all entries when 'clear' is clicked
-5. check whether all entries are valid when 'check' is clicked
-6. use sudoku solver to get a solution when 'show solution' is clicked
+'start' button         --> print the sudoku puzzle and a 'check', 'exit', 'clear' and 'show solution' button
+'check' button         --> check whether all entries are valid. 
+                           If some entries is not filled, "Finish before check" is printed to the top of screen, 
+                           otherwise it will tell which entry is wrong.
+                           If every entries is correct, it will print "Congratulation!! You got it!!"
+'exit' button          --> exit the program 
+'clear' button         --> clear all entries
+'show solution' button --> used a sudoku solver to get answer and print answer to entries
+                           so the solution will depend on the user's previous entries
+ 
+ P.S. considered adding difficulty levels and a restart button but have to move on to other projects first
+
