@@ -78,6 +78,13 @@ class Sudoku(tk.Frame):
             entry = l[2]
             entry.bind("<Leave>", self.bind_entry)
 
+        # create an exit button
+        # create start button
+        self.exit_btn = tk.Button(root, text="Quit", font=("Helvetica", 20),
+                                  fg="white", bg="coral1", command=self.master.destroy)
+        self.start_btn_window = self.canvas.create_window(350, 530, width=80,
+                                                          window=self.exit_btn)
+
 
     # helper functions for start
     def draw_table(self):
@@ -103,14 +110,6 @@ class Sudoku(tk.Frame):
                     self.canvas.create_text(coord, anchor="nw", text=str(num),
                                             font=("Helvetica", 30))
 
-
-    
-            
-                    
-        
-
-    
-        
 
 
 """ main """
