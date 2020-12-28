@@ -8,7 +8,8 @@ author: Qiqi Su
 import tkinter as tk
 from PIL import ImageTk, Image
 from create_sudoku import create_sudoku
-
+from sudoku_solver import valid, solve
+from time import sleep
 
 class Sudoku(tk.Frame):
     def __init__(self, master = None):
@@ -49,6 +50,26 @@ class Sudoku(tk.Frame):
         userinput = event.widget.get()
         if userinput not in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
             event.widget.delete(0, tk.END)
+
+    def clear(self):
+        for l in self.entries:
+            l[2].delete(0, tk.END)
+
+    def check(self):
+        numdict = self.numdiction()
+        for l in self.entries:
+            try:
+                value = numdict[l[2].get()]
+            except KeyError:
+                errormsg = self.canvas.create_text(225, 20, text="Finish before check",
+                   font=("Helvetica", 30), fill = "red")
+                self.canvas.after(500, self.canvas.delete, errormsg)
+                return
+            
+        
+
+    def sol(self):
+        return
     
     def start(self):
         # delete previous stuffs
@@ -79,11 +100,28 @@ class Sudoku(tk.Frame):
             entry.bind("<Leave>", self.bind_entry)
 
         # create an exit button
-        # create start button
         self.exit_btn = tk.Button(root, text="Quit", font=("Helvetica", 20),
                                   fg="white", bg="coral1", command=self.master.destroy)
-        self.start_btn_window = self.canvas.create_window(350, 530, width=80,
+        self.exit_btn_window = self.canvas.create_window(350, 540, width=80,
                                                           window=self.exit_btn)
+
+        # create a clear button
+        self.clear_btn = tk.Button(root, text="Clear", font=("Helvetica", 20),
+                                  fg="white", bg="coral1", command=self.clear)
+        self.clear_btn_window = self.canvas.create_window(350, 450, width=80,
+                                                          window=self.clear_btn)
+
+        # create a check button
+        self.check_btn = tk.Button(root, text="Check", font=("Helvetica", 30),
+                                  fg="white", bg="coral1", command=self.check)
+        self.check_btn_window = self.canvas.create_window(150, 455, width=150,
+                                                          window=self.check_btn)
+        
+        # create a show solution button
+        self.sol_btn = tk.Button(root, text="Show solution", font=("Helvetica", 20),
+                                  fg="white", bg="coral1", command=self.sol)
+        self.sol_btn_window = self.canvas.create_window(150, 540, width=200,
+                                                          window=self.sol_btn)
 
 
     # helper functions for start
@@ -109,6 +147,11 @@ class Sudoku(tk.Frame):
                     coord = 49+i*40, 40+j*40
                     self.canvas.create_text(coord, anchor="nw", text=str(num),
                                             font=("Helvetica", 30))
+    def numdiction(self):
+        d = {}
+        for i in range(1, 10):
+            d[str(i)] = i
+        return d
 
 
 
