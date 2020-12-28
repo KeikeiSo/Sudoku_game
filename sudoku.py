@@ -52,6 +52,9 @@ class Sudoku(tk.Frame):
             event.widget.delete(0, tk.END)
 
     def clear(self):
+        self.sol_btn["state"] = tk.NORMAL
+        self.check_btn["state"] = tk.NORMAL
+        self.canvas.delete(self.endmsg)
         for l in self.entries:
             l[2].delete(0, tk.END)
 
@@ -65,10 +68,37 @@ class Sudoku(tk.Frame):
                    font=("Helvetica", 30), fill = "red")
                 self.canvas.after(500, self.canvas.delete, errormsg)
                 return
-            
-        
+            x = l[0]
+            y = l[1]
+            if valid(value, x, y, self.sudoku):
+                self.sudoku[x][y]=value
+            else:
+                msg = "Hint: number at position"+str(x)+","+str(y)+" is wrong"
+                errormsg = self.canvas.create_text(225, 20, text=msg,
+                   font=("Helvetica", 20), fill = "red")
+                self.canvas.after(1000, self.canvas.delete, errormsg)
+                return
+        self.endmsg = self.canvas.create_text(225, 20, text="Congratulation!! You got it!!",
+                                font=("Helvetica", 20), fill = "green2")
+        self.sol_btn["state"] = tk.DISABLED
+        self.check_btn["state"] = tk.DISABLED
+        self.clear_btn["text"] = "Try Again"
+        self.canvas.delete(self.clear_btn_window)
+        self.clear_btn_window = self.canvas.create_window(350, 450, width=150,
+                                                          window=self.clear_btn)
+        return
 
     def sol(self):
+        if solve(self.sudoku):
+            for l in self.entries:
+                entry = l[2]
+                entry.delete(0, tk.END)
+                entry.insert(0, self.sudoku[l[0]][l[1]])
+        else:
+            msg = "Something went wrong"
+            errormsg = self.canvas.create_text(225, 20, text=msg,
+                                               font=("Helvetica", 20), fill = "red")
+            self.canvas.after(1000, self.canvas.delete, errormsg)
         return
     
     def start(self):

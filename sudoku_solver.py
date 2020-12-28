@@ -12,13 +12,12 @@ def find_empty(sudoku):
 
 def valid(n, i, j, sudoku):
     # check row
-    row = sudoku[i]
-    for r in row:
-        if r == n:
+    for r in range(9):
+        if sudoku[i][r] == n and r != j:
             return False
     # check column
     for c in range(9):
-        if sudoku[c][j] == n:
+        if sudoku[c][j] == n and c != i:
             return False
 
     # check box
@@ -26,9 +25,8 @@ def valid(n, i, j, sudoku):
     boxposy = (j // 3)*3
     for x in range(boxposx, boxposx+3):
         for y in range(boxposy, boxposy+3):
-            if sudoku[x][y] == n:
+            if sudoku[x][y] == n and x != i and y != j:
                 return False
-
     return True
     
 # the solver function
