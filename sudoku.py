@@ -27,22 +27,46 @@ class Sudoku(tk.Frame):
         self.canvas = tk.Canvas(self, bg="white", width=440, height=600)
         self.canvas.pack(fill="both", expand=True)
 
-    def create_front(self):
-        # create background
+        # all stuffs needed for create_front
         # photo should be in the same file
         openbg = Image.open("green_red_bg.png")
         self.bg = ImageTk.PhotoImage(openbg.resize((440, 600)))
+        self.easy_btn = tk.Button(root, text="Easy", font=("Helvetica", 25),
+                                  width=20, fg="white", bg="coral1", command=lambda: self.start(20))
+        self.normal_btn = tk.Button(root, text="Normal", font=("Helvetica", 25),
+                                    width=20, fg="white", bg="coral1", command=lambda: self.start(40))
+        self.hard_btn = tk.Button(root, text="Hard", font=("Helvetica", 25),
+                                  width=20, fg="white", bg="coral1", command=lambda: self.start(50))
+
+        # all stuffs needed for start
+        opencv = Image.open("canvas.png")
+        self.cv = ImageTk.PhotoImage(opencv)
+        self.exit_btn = tk.Button(root, text="Quit", font=("Helvetica", 20),
+                                  fg="white", bg="coral1", command=self.master.destroy)
+        self.clear_btn = tk.Button(root, text="Clear", font=("Helvetica", 20),
+                                   fg="white", bg="coral1", command=self.clear)
+        self.check_btn = tk.Button(root, text="Check", font=("Helvetica", 30),
+                                   fg="white", bg="coral1", command=self.check)
+        self.sol_btn = tk.Button(root, text="Show solution", font=("Helvetica", 20),
+                                 fg="white", bg="coral1", command=self.sol)
+
+    def create_front(self):
+        # create background
         self.canvas.create_image(0, 0, image=self.bg, anchor="nw")
 
         # create front title
-        self.frontmsg = self.canvas.create_text(225, 200, text="Sudoku",
+        self.frontmsg = self.canvas.create_text(225, 150, text="Sudoku",
                                                 font=("Helvetica", 50), fill="white")
 
-        # create start button
-        self.start_btn = tk.Button(root, text="Start", font=("Helvetica", 30),
-                                   width=20, fg="white", bg="coral1", command=self.start)
-        self.start_btn_window = self.canvas.create_window(225, 350, width=200,
-                                                          window=self.start_btn)
+        # create start buttons
+        self.easy_btn_window = self.canvas.create_window(225, 300, width=150,
+                                                         window=self.easy_btn)
+
+        self.normal_btn_window = self.canvas.create_window(225, 400, width=150,
+                                                           window=self.normal_btn)
+
+        self.hard_btn_window = self.canvas.create_window(225, 500, width=150,
+                                                         window=self.hard_btn)
 
     def bind_entry(self, event):
         userinput = event.widget.get()
@@ -98,20 +122,19 @@ class Sudoku(tk.Frame):
             self.canvas.after(1000, self.canvas.delete, errormsg)
         return
 
-    def start(self):
+    def start(self, n):
         # delete previous stuffs
         self.canvas.delete(self.frontmsg)
-        self.start_btn.destroy()
+        self.canvas.delete(self.easy_btn_window)
+        self.canvas.delete(self.normal_btn_window)
+        self.canvas.delete(self.hard_btn_window)
 
         # make a board
-        opencv = Image.open("canvas.png")
-        self.cv = ImageTk.PhotoImage(opencv)
         self.canvas.create_image(39, 39, image=self.cv, anchor="nw")
-
         self.draw_table()
 
         # generate a sudoku
-        self.sudoku = create_sudoku()
+        self.sudoku = create_sudoku(n)
         self.entries = []
         self.print_puzzle()
 
@@ -127,26 +150,19 @@ class Sudoku(tk.Frame):
             entry.bind("<Leave>", self.bind_entry)
 
         # create an exit button
-        self.exit_btn = tk.Button(root, text="Quit", font=("Helvetica", 20),
-                                  fg="white", bg="coral1", command=self.master.destroy)
         self.exit_btn_window = self.canvas.create_window(350, 540, width=80,
                                                          window=self.exit_btn)
-
         # create a clear button
-        self.clear_btn = tk.Button(root, text="Clear", font=("Helvetica", 20),
-                                   fg="white", bg="coral1", command=self.clear)
+        self.clear_btn["text"] = "Clear"
+        self.clear_btn["command"] = self.clear
         self.clear_btn_window = self.canvas.create_window(350, 450, width=80,
                                                           window=self.clear_btn)
-
         # create a check button
-        self.check_btn = tk.Button(root, text="Check", font=("Helvetica", 30),
-                                   fg="white", bg="coral1", command=self.check)
+        self.check_btn["state"] = tk.NORMAL
         self.check_btn_window = self.canvas.create_window(150, 455, width=150,
                                                           window=self.check_btn)
-
         # create a show solution button
-        self.sol_btn = tk.Button(root, text="Show solution", font=("Helvetica", 20),
-                                 fg="white", bg="coral1", command=self.sol)
+        self.sol_btn["state"] = tk.NORMAL
         self.sol_btn_window = self.canvas.create_window(150, 540, width=200,
                                                         window=self.sol_btn)
 
@@ -154,47 +170,8 @@ class Sudoku(tk.Frame):
         # delete previous stuffs
         self.canvas.delete("all")
 
-        # create background
-        self.canvas.create_image(0, 0, image=self.bg, anchor="nw")
+        self.create_front()
 
-        # make a board
-        opencv = Image.open("canvas.png")
-        self.cv = ImageTk.PhotoImage(opencv)
-        self.canvas.create_image(39, 39, image=self.cv, anchor="nw")
-
-        self.draw_table()
-
-        # generate a sudoku
-        self.sudoku = create_sudoku()
-        self.entries = []
-        self.print_puzzle()
-
-        # restrict the user input on entries
-        for l in self.entries:
-            entry = l[2]
-            entry.bind("<Leave>", self.bind_entry)
-
-        # create an exit button
-        self.exit_btn_window = self.canvas.create_window(350, 540, width=80,
-                                                         window=self.exit_btn)
-
-        # create a clear button
-        self.clear_btn["text"] = "Clear"
-        self.clear_btn["command"] = self.clear
-        self.clear_btn_window = self.canvas.create_window(350, 450, width=80,
-                                                          window=self.clear_btn)
-
-        # create a check button
-        self.check_btn["state"] = tk.NORMAL
-        self.check_btn_window = self.canvas.create_window(150, 455, width=150,
-                                                          window=self.check_btn)
-
-        # create a show solution button
-        self.sol_btn["state"] = tk.NORMAL
-        self.sol_btn_window = self.canvas.create_window(150, 540, width=200,
-                                                        window=self.sol_btn)
-
-    
     # helper functions for start
 
     def draw_table(self):
