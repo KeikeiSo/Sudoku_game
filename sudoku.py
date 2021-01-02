@@ -10,6 +10,21 @@ from PIL import ImageTk, Image
 from create_sudoku import create_sudoku
 from sudoku_solver import valid, solve
 from time import sleep
+import os
+import sys
+
+# helper functions
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 
 class Sudoku(tk.Frame):
