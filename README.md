@@ -13,5 +13,4 @@
 5.'show solution' button --> used a sudoku solver to get answer and print answer to entries
                            so the solution will depend on the user's previous entries
                            
-P.S. considered adding difficulty levels and a restart button but have to move on to other projects first
-
+P.S. added difficulty levels and a restart button
